@@ -1,0 +1,70 @@
+.model small
+.stack
+.data
+
+M1 DB 10,13,"Addition is:$"
+M2 DB 10,13, "Subtraction is: $"
+
+NUM1 DW 5347H
+NUM2 DW 1342H
+RES DW ?
+
+.code
+DISP MACRO XX
+    MOV AH, 09
+    LEA DX, XX
+    INT 21H
+ENDM
+
+.STARTUP
+DISP M1
+MOV AX, NUM1
+ADD AX, NUM2
+MOV RES, AX
+CALL DISP1
+
+DISP M2
+MOV AX, NUM1
+SUB AX, NUM2
+MOV RES, AX
+CALL DISP1
+JMP LAST
+
+DISP1 PROC
+    MOV BX, RES
+    AND BH, 0F0H
+    MOV CL, 4
+    SHR BH, CL
+    ADD BH, 30H
+    MOV DL, BH
+    MOV AH, 02H
+    INT 21H
+
+    MOV BX, RES
+    AND BH, 0FH
+    ADD BH, 30H
+    MOV DL, BH
+    MOV AH, 02
+    INT 21H
+
+    MOV BX, RES
+    AND BL, 0F0H
+    MOV CL, 4
+    SHR BL, CL
+    ADD BL, 30H
+    MOV DL, BL
+    MOV AH, 02
+    INT 21H
+
+    MOV BX, RES
+    AND BL, 0FH
+    ADD BL, 30H
+    MOV DL, BL
+    MOV AH, 02
+    INT 21H
+
+    RET
+    DISP1 ENDP
+LAST:
+.EXIT
+END
